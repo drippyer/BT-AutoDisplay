@@ -15,15 +15,15 @@ MAC="ENTER MAC ADDRESS HERE"
 output="$(python bluetooth-proximity/examples/test_address.py $MAC)"
 status=""
 
-# if display_status.dat does not exist, set status to "on" then create .dat
-if [ ! -f "display_status.dat" ]; then
+# if /tmp/display_status.dat does not exist, set status to "on" then create .dat
+if [ ! -f "/tmp/display_status.dat" ]; then
 	echo "status file NOT found"
 	vcgencmd display_power 1
 	status="on" 
-	echo $status >| display_status.dat
-# otherwise set status to the value in display_status.dat ("on"/"off")
+	echo $status >| /tmp/display_status.dat
+# otherwise set status to the value in /tmp/display_status.dat ("on"/"off")
 else
-	status=`cat display_status.dat`
+	status=`cat /tmp/display_status.dat`
 	echo "status file found, status: $status"
 fi
 
@@ -34,7 +34,7 @@ if [ $output = "None" ]; then
 		echo "bluetooth has disconnected, turning display off..."
 		vcgencmd display_power 0
 		status="off" 
-		echo $status >| display_status.dat
+		echo $status >| /tmp/display_status.dat
 	# ... and display was off before, then do nothing
 	else
 		echo "bluetooth not connected but display already off, not doing anything"
@@ -46,7 +46,7 @@ else
 		echo "bluetooth reconnected, turning display on..."
 		vcgencmd display_power 1
 		status="on" 
-		echo $status >| display_status.dat
+		echo $status >| /tmp/display_status.dat
 	else
 		echo "bluetooth connected but display already on, not doing anything"
 	fi
